@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: #1c1412;
+  color: #f3eadb;
+  font-feature-settings: 'tnum' on;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- splash ---------- */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: #1c1412;
+  display: grid;
+  place-items: center;
+  transition: opacity 0.4s ease;
+}
+.splash[data-hidden='true'] {
+  opacity: 0;
+  pointer-events: none;
+}
+.splash-spin {
+  width: 28px;
+  height: 28px;
+  margin: 18px auto 0;
+  border: 3px solid rgba(255, 122, 26, 0.25);
+  border-top-color: #ff7a1a;
+  border-radius: 999px;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- route badge ---------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem 0.5rem;
+  font-weight: 800;
+  font-size: 0.85rem;
+  border-radius: 0.5rem;
+  letter-spacing: 0.02em;
+}
+.badge-kmb { background: #ff7a1a; color: #1c1412; }
+.badge-lwb { background: #ffd34d; color: #1c1412; }
+.badge-ctb { background: #2bb6a8; color: #1c1412; }
+.badge-nlb { background: #b48cff; color: #1c1412; }
+
+/* ---------- eta pill ---------- */
+.eta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.eta-arriving { color: #ff7a1a; }
+.eta-soon { color: #ffb547; }
+.eta-later { color: #f3eadb; }
+
+/* ---------- card ---------- */
+.card {
+  background: #241a17;
+  border: 1px solid #3a2b25;
+  border-radius: 1rem;
+}
+.card-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #2c201c;
+}
+.card-row:last-child {
+  border-bottom: none;
+}
