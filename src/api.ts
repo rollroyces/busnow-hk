@@ -130,6 +130,9 @@ export function stopsByIds(co: Operator, ids: string[]): Promise<(Stop | null)[]
 }
 
 export function fmtEta(lang: 'zh-HK' | 'zh-CN' | 'en', item: EtaItem): { label: string; minutes: number | null; arriving: boolean } {
+  // Some CTB entries come back with empty `eta` strings (e.g. KMB-cycle routes
+  // through a Citybus stop). Treat them as no-data.
+  if (!item.eta) return { label: '—', minutes: null, arriving: false };
   const ts = Date.parse(item.eta);
   if (Number.isNaN(ts)) return { label: '—', minutes: null, arriving: false };
   const ms = ts - Date.now();
@@ -138,6 +141,37 @@ export function fmtEta(lang: 'zh-HK' | 'zh-CN' | 'en', item: EtaItem): { label: 
   if (lang === 'en') return { label: `${min} min`, minutes: min, arriving: false };
   if (lang === 'zh-CN') return { label: `${min} 分钟`, minutes: min, arriving: false };
   return { label: `${min} 分鐘`, minutes: min, arriving: false };
+}
+
+/**
+ * Returns the destination label for an ETA entry.
+ * The KMB endpoint returns `dest_tc / dest_sc / dest_en`. The Citybus batch
+ * endpoint returns a single `dest` string (English). Normalise to all three.
+ */
+export function destLabel(lang: 'zh-HK' | 'zh-CN' | 'en', item: EtaItem): string {
+  const tc = item.dest_tc || '';
+  const sc = item.dest_sc || '';
+  const en = item.dest_en || (item as any).dest || '';
+  if (lang === 'zh-HK') return tc || en || sc;
+  if (lang === 'zh-CN') return sc || tc || en;
+  return en || tc || sc;
+}
+
+/** Remark text in the current language, with a sensible fallback chain. */
+export function remarkLabel(lang: 'zh-HK' | 'zh-CN' | 'en', item: EtaItem): string {
+  const tc = item.rmk_tc || '';
+  const sc = item.rmk_sc || '';
+  const en = item.rmk_en || (item as any).rmk || '';
+  if (lang === 'zh-HK') return tc || en || sc;
+  if (lang === 'zh-CN') return sc || tc || en;
+  return en || tc || sc;
+}
+
+/** True if the entry has a real ISO eta we can render. */
+export function hasValidEta(item: EtaItem): boolean {
+  if (!item.eta) return false;
+  const t = Date.parse(item.eta);
+  return !Number.isNaN(t);
 }
 
 export function opBadgeClass(co: Operator): string {
