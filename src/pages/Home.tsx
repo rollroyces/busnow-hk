@@ -91,18 +91,7 @@ export default function Home({ lang, goto }: { lang: Lang; goto: (r: Route) => v
       </section>
 
       <section className="mt-4 px-4">
-        <div className="flex items-baseline justify-between">
-          <h2 className="text-sm font-medium text-muted">{t(lang, 'recent')}</h2>
-          {recent.list.length > 0 && (
-            <button
-              type="button"
-              className="text-xs text-muted underline-offset-2 hover:underline"
-              onClick={() => { localStorage.removeItem('busnow:recent'); location.reload(); }}
-            >
-              Clear
-            </button>
-          )}
-        </div>
+        <h2 className="text-sm font-medium text-muted">{t(lang, 'recent')}</h2>
         <div className="mt-2 card overflow-hidden">
           {recent.list.length === 0 && (
             <div className="px-4 py-6 text-center text-sm text-muted">{t(lang, 'noRecent')}</div>
