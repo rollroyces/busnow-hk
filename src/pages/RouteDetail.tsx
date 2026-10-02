@@ -86,7 +86,6 @@ export default function RouteDetail({ lang, co, route, dir, goto }: { lang: Lang
             <p className="text-xs text-muted">{t(lang, 'route')} · {co}</p>
             <div className="mt-1 flex items-center gap-3">
               <span className={`badge ${badgeFor(co as Operator)} text-base px-3 py-1`}>{route}</span>
-              <span className="text-xs text-muted">{dir === 'O' ? 'Outbound' : 'Inbound'}</span>
             </div>
             <p className="mt-3 text-sm text-cream">{origLabel} → {destLabel}</p>
           </div>
