@@ -12,11 +12,23 @@ export const STRINGS = {
     noFavRoutes: '尚未收藏任何路線',
     noFavStops: '尚未收藏任何車站',
     noRecent: '未有最近紀錄',
-    searchPlaceholder: '輸入路線號碼或車站名稱',
+    searchPlaceholder: '路線、地點或車站',
+    nearbyRoutes: '附近路線',
+    nearbyStops: '附近車站',
+    nearbyPlaces: '附近地點',
+    enableLocation: '啟用定位',
+    locationDenied: '未能取得位置',
+    locationSearching: '正在定位…',
+    tabAll: '全部',
+    tabKMB: '九巴',
+    tabLWB: '龍運',
+    tabCTB: '城巴',
     stop: '車站',
     route: '路線',
     stops: '車站',
     routes: '路線',
+    place: '地點',
+    places: '地點',
     eta: '到站',
     arriving: '即將到站',
     min: '分鐘',
@@ -37,7 +49,8 @@ export const STRINGS = {
     wheelchair: '低地台',
     empty: '未有結果',
     resultsFor: '「{q}」嘅結果',
-    languageName: '繁體中文'
+    languageName: '繁體中文',
+    switchTo: 'English'
   },
   'zh-CN': {
     appName: 'BusNow',
@@ -50,11 +63,23 @@ export const STRINGS = {
     noFavRoutes: '尚未收藏任何路线',
     noFavStops: '尚未收藏任何车站',
     noRecent: '暂无最近记录',
-    searchPlaceholder: '输入路线号码或车站名称',
+    searchPlaceholder: '路线、地點或车站',
+    nearbyRoutes: '附近路线',
+    nearbyStops: '附近车站',
+    nearbyPlaces: '附近地點',
+    enableLocation: '启用定位',
+    locationDenied: '未能获取位置',
+    locationSearching: '正在定位…',
+    tabAll: '全部',
+    tabKMB: '九巴',
+    tabLWB: '龙运',
+    tabCTB: '城巴',
     stop: '车站',
     route: '路线',
     stops: '车站',
     routes: '路线',
+    place: '地點',
+    places: '地點',
     eta: '到站',
     arriving: '即将到站',
     min: '分钟',
@@ -75,7 +100,8 @@ export const STRINGS = {
     wheelchair: '低地台',
     empty: '没有结果',
     resultsFor: '“{q}”的结果',
-    languageName: '简体中文'
+    languageName: '简体中文',
+    switchTo: 'English'
   },
   en: {
     appName: 'BusNow',
@@ -88,11 +114,23 @@ export const STRINGS = {
     noFavRoutes: 'No saved routes yet',
     noFavStops: 'No saved stops yet',
     noRecent: 'No recent searches',
-    searchPlaceholder: 'Route number or stop name',
+    searchPlaceholder: 'Route, place or stop',
+    nearbyRoutes: 'Nearby routes',
+    nearbyStops: 'Nearby stops',
+    nearbyPlaces: 'Nearby places',
+    enableLocation: 'Use my location',
+    locationDenied: 'Location unavailable',
+    locationSearching: 'Locating…',
+    tabAll: 'All',
+    tabKMB: 'KMB',
+    tabLWB: 'LWB',
+    tabCTB: 'Citybus',
     stop: 'Stop',
     route: 'Route',
     stops: 'Stops',
     routes: 'Routes',
+    place: 'Place',
+    places: 'Places',
     eta: 'ETA',
     arriving: 'Arriving',
     min: 'min',
@@ -113,7 +151,8 @@ export const STRINGS = {
     wheelchair: 'Low-floor',
     empty: 'No results',
     resultsFor: 'Results for “{q}”',
-    languageName: 'English'
+    languageName: 'English',
+    switchTo: '繁體中文'
   }
 } as const;
 
@@ -133,4 +172,11 @@ export function name(lang: Lang, item: { name_en?: string; name_tc?: string; nam
   if (lang === 'zh-HK') return item.name_tc || item.name_en || '';
   if (lang === 'zh-CN') return item.name_sc || item.name_tc || item.name_en || '';
   return item.name_en || item.name_tc || '';
+}
+
+/** Next language in the cycle: zh-HK → zh-CN → en → zh-HK. */
+export function nextLang(lang: Lang): Lang {
+  if (lang === 'zh-HK') return 'en';
+  if (lang === 'zh-CN') return 'en';
+  return 'zh-HK';
 }
