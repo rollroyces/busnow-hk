@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLang } from './storage';
-import { t } from './i18n';
+import { t, nextLang } from './i18n';
 import Header from './components/Header';
 import Nav from './components/Nav';
 import Splash from './components/Splash';
@@ -68,11 +68,7 @@ export default function App() {
       <Header
         now={now}
         lang={lang}
-        onChangeLang={() => {
-          const order: typeof lang[] = ['zh-HK', 'zh-CN', 'en'];
-          const idx = order.indexOf(lang);
-          setLang(order[(idx + 1) % order.length]);
-        }}
+        onChangeLang={() => setLang(nextLang(lang))}
       />
       <main className="mx-auto w-full max-w-xl">
         {route.name === 'home' && <Home lang={lang} goto={goto} />}
