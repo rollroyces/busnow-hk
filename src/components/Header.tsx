@@ -1,4 +1,5 @@
 import type { Lang } from '../i18n';
+import { nextLang, t } from '../i18n';
 
 function pad(n: number) { return n.toString().padStart(2, '0'); }
 
@@ -16,7 +17,7 @@ export default function Header({ now, lang, onChangeLang }: { now: Date; lang: L
               </div>
             </a>
             <div className="min-w-0">
-              <p className="text-sm text-paper/70">Hong Kong Bus</p>
+              <p className="text-sm text-paper/70">{t(lang, 'appTagline')}</p>
               <h1 className="text-3xl font-black tracking-tight text-cream">BusNow</h1>
             </div>
           </div>
@@ -26,9 +27,9 @@ export default function Header({ now, lang, onChangeLang }: { now: Date; lang: L
               type="button"
               onClick={onChangeLang}
               className="h-11 shrink-0 rounded-full border border-paper/40 px-3 text-sm font-semibold text-cream"
-              aria-label="Change language"
+              aria-label={t(lang, 'language')}
             >
-              {lang === 'en' ? 'EN' : lang === 'zh-CN' ? '简' : '繁'}
+              {t(lang, 'switchTo')}
             </button>
           </div>
         </div>
@@ -37,3 +38,6 @@ export default function Header({ now, lang, onChangeLang }: { now: Date; lang: L
     </header>
   );
 }
+
+// Re-export for callers
+export { nextLang };
