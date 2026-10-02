@@ -96,7 +96,7 @@ export default function Search({ lang, goto }: { lang: Lang; goto: (r: Route) =>
                     <p className="truncate text-sm font-semibold text-cream">
                       {routeLabel(lang, r)}
                     </p>
-                    <p className="truncate text-xs text-muted">{r.co} · {dir === 'O' ? 'Outbound' : 'Inbound'}</p>
+                    <p className="truncate text-xs text-muted">{r.co}</p>
                   </div>
                 </div>
               );
