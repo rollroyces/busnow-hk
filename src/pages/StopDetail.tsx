@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { t, type Lang, name } from '../i18n';
 import type { Route } from '../App';
 import {
-  getKmbStopEta, getCtbBatchEta, fmtEta, opBadgeClass,
+  getKmbStopEta, getCtbBatchEta, fmtEta, destLabel, remarkLabel, hasValidEta,
+  opBadgeClass,
   type EtaItem, type Stop
 } from '../api';
 import { useFavStops, useRecent } from '../storage';
@@ -25,7 +26,11 @@ export default function StopDetail({ lang, stopId, goto }: { lang: Lang; stopId:
         getKmbStopEta(stopId).catch(() => [] as EtaItem[]),
         getCtbBatchEta(stopId).catch(() => [] as EtaItem[])
       ]);
-      setEtas([...kmb, ...ctb].sort((a, b) => Date.parse(a.eta) - Date.parse(b.eta)));
+      // Keep only entries that have a real, parseable ETA — CTB returns
+      // rows with empty `eta` for KMB-cycle routes that we can't render.
+      const merged = [...kmb, ...ctb].filter(hasValidEta);
+      merged.sort((a, b) => Date.parse(a.eta) - Date.parse(b.eta));
+      setEtas(merged);
       setLastUpdate(new Date());
     } catch (e: any) {
       setError(e?.message ?? 'Error');
@@ -37,7 +42,6 @@ export default function StopDetail({ lang, stopId, goto }: { lang: Lang; stopId:
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      // Try to resolve stop name from full stop list (best-effort)
       try {
         const stops = await getKmbStops();
         if (cancelled) return;
@@ -124,12 +128,23 @@ export default function StopDetail({ lang, stopId, goto }: { lang: Lang; stopId:
       )}
 
       {!error && loading && etas.length === 0 && (
-        <p className="mt-6 text-center text-sm text-muted">{t(lang, 'loading')}</p>
+        <div className="mt-6 space-y-3">
+          {[0, 1, 2, 3].map(i => (
+            <div key={i} className="h-20 animate-pulse rounded-2xl bg-line motion-reduce:animate-none" />
+          ))}
+        </div>
       )}
 
       {!error && !loading && etas.length === 0 && (
         <div className="mt-6 text-center">
           <p className="text-sm text-muted">{t(lang, 'noEta')}</p>
+          <p className="mt-1 text-xs text-muted/70">
+            {lang === 'en'
+              ? 'Try a different stop, or check back in a few minutes — service may not be running right now.'
+              : lang === 'zh-CN'
+                ? '请尝试其他车站，或稍后再试——此时段可能没有班次。'
+                : '請試吓其他車站，或者稍後再嚟——呢個時段可能冇班次。'}
+          </p>
         </div>
       )}
 
@@ -137,7 +152,7 @@ export default function StopDetail({ lang, stopId, goto }: { lang: Lang; stopId:
         {groups.map(([key, items]) => {
           const [co, route, dir] = key.split('|');
           const dest = items[0];
-          const destLabel = lang === 'en' ? dest.dest_en : lang === 'zh-CN' ? (dest.dest_sc || dest.dest_tc) : dest.dest_tc;
+          const destText = destLabel(lang, dest);
           return (
             <div key={key} className="card overflow-hidden">
               <button
@@ -147,7 +162,7 @@ export default function StopDetail({ lang, stopId, goto }: { lang: Lang; stopId:
               >
                 <span className={`badge ${opBadgeClass(co as any)}`}>{route}</span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-cream">{t(lang, 'towards')} {destLabel}</p>
+                  <p className="truncate text-sm font-semibold text-cream">{destText ? `${t(lang, 'towards')} ${destText}` : co}</p>
                   <p className="truncate text-xs text-muted">{co}</p>
                 </div>
               </button>
@@ -155,7 +170,7 @@ export default function StopDetail({ lang, stopId, goto }: { lang: Lang; stopId:
                 {items.map((e, i) => {
                   const f = fmtEta(lang, e);
                   const cls = f.arriving ? 'eta eta-arriving' : (f.minutes !== null && f.minutes <= 5 ? 'eta eta-soon' : 'eta eta-later');
-                  const remark = lang === 'en' ? e.rmk_en : lang === 'zh-CN' ? (e.rmk_sc || e.rmk_tc) : e.rmk_tc;
+                  const remark = remarkLabel(lang, e);
                   return (
                     <div key={`${e.eta}-${i}`} className="flex items-center justify-between px-4 py-2.5 text-sm">
                       <span className={cls}>{f.label}</span>
