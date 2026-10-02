@@ -62,6 +62,13 @@ body {
 .badge-ctb { background: #2bb6a8; color: #1c1412; }
 .badge-nlb { background: #b48cff; color: #1c1412; }
 
+/* ---------- scrollbar hide (filter chips row) ---------- */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
 /* ---------- eta pill ---------- */
 .eta {
   display: inline-flex;
